@@ -1,43 +1,35 @@
 import {models} from '../../models'
 
 const get = async (req, res, next) => {
-    //사용자 조회
     try {
-        // GET /v1/users/1 -> params
-        // GET /v1/user?id=1 -> qurey
-        // 특정 사용자 조회
-        if(req.params.id){
-            const user = await models.NotePad.findOne(
-                {
-                    where : {
-                        id : req.params.id
-                    }
-                }
-            );
-
-            if(!user) {
-                return res.status(404)
-                    .json({message:'사용자를 찾을 수 없습니다.'})
-            }
-
-            return res.status(200)
-                .json({user})
-        }
-
-        // 모든 사용자 조회
-        const users = await models.NotePad.findAll()
-        return res.status(200)
-            .json({ users })
-
+        const notePads = await models.NotePad.findAll();
+        return res.status(200).json({ notePads });
     } catch (err) {
-        next(err)
+        next(err);
+    }
+};
+
+const getById = async (req, res, next) => {
+    if(req.params.id) {
+        const notepad = await models.NotePad.findOne(
+            {
+                where : {
+                    id : req.params.id
+                }
+            });
+        if(!notepad) {
+            return res.status(404).json({message:'사용자를 찾을 수 없습니다.'});
+        }
+        return res.status(200).json({ notepad })
+    } else {
+        throw Error("no id");
     }
 };
 
 const post = async (req, res , next) => {
     //create
     try {
-        const user = await models.NotePad.create(
+        const notepad = await models.NotePad.create(
             {
                 title: req.body.title,
                 noteWrite: req.body.noteWrite,
@@ -48,8 +40,8 @@ const post = async (req, res , next) => {
         return res.status(201)
             .json(
                 {
-                    message: '사용자를 생성하였습니다.',
-                    user
+                    message: '게시글을 생성하였습니다.',
+                    notepad
                 }
             )
     } catch (err) {
@@ -60,22 +52,22 @@ const post = async (req, res , next) => {
 const put = async (req,res,next) => {
     //update
     try{
-        const user = await models.NotePad.findOne({
+        const notepad = await models.NotePad.findOne({
             where : {
                 id: req.params.id
             }
         });
 
-        if(user){
+        if(!notepad){
             return res.status(404)
                 .json({message : ' 사용자를 찾을 수 없습니다.'})
         }
 
-        user.password = req.body.password;
-        await user.save();
+        notepad.noteWrite = req.body.noteWrite;
+        await notepad.save();
 
         return res.status(200)
-            .json({message : '사용자 정보를 수정하였습니다',user})
+            .json({message : '사용자 정보를 수정하였습니다',notepad})
     }catch(err){
         next(err)
     }
@@ -98,6 +90,7 @@ const remove = async (req, res, next) => {
 
 export {
     get,
+    getById,
     post,
     put,
     remove

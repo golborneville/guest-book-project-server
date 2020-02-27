@@ -1,6 +1,6 @@
 import express from 'express'
 import {
-    get, remove, post, put
+    get, remove, post, put, getById
 } from '../../controllers/v1/notepad.controller'
 
 const router = express.Router();
@@ -15,7 +15,7 @@ router.route('/')
 // PUT /v1/notepad/id : 특정 사용자 수정
 // DEL /v1/notpad/id : 특정 사용자 삭제
 router.route('/:id')
-    .get(get)
+    .get(getById)
     .put(put)
     .delete(remove)
 export default router
