@@ -1,5 +1,6 @@
 import {models} from '../../models'
 
+//select all
 const get = async (req, res, next) => {
     try {
         const notePads = await models.NotePad.findAll();
@@ -8,7 +9,7 @@ const get = async (req, res, next) => {
         next(err);
     }
 };
-
+//select by id
 const getById = async (req, res, next) => {
     if(req.params.id) {
         const notepad = await models.NotePad.findOne(
