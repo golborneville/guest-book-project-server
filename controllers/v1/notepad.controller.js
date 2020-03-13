@@ -63,7 +63,8 @@ const put = async (req,res,next) => {
             return res.status(404)
                 .json({message : ' 사용자를 찾을 수 없습니다.'})
         }
-
+        notepad.title = req.body.title;
+        notepad.writer = req.body.writer;
         notepad.noteWrite = req.body.noteWrite;
         await notepad.save();
 
